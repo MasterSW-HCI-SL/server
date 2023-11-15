@@ -10,7 +10,7 @@ app = FastAPI(root_path="/")
 app.mount("/", StaticFiles(directory = "../../Web/dist", html = True), name = "frontend")
 
 # Serving the ML model
-# Remember to define the URL as "/model/keypoint_classifier.hdf5"
+# TODO: Serve 2 files. One .json, and one .bin (.tflite?)
 app.mount("/model", StaticFiles(directory="../../hand-gesture-recognition-trainer/model/keypoint_classifier"), name = "model")
 
 # Serving the FSA
