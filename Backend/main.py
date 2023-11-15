@@ -1,51 +1,26 @@
-import os
-from flask import Flask, request, jsonify, make_response
-import endpoints.front as front
-import endpoints.fsa as fsa
-import endpoints.model as model
-import json
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
+import uvicorn
 
-app = Flask(__name__)
+app = FastAPI(root_path="/")
+
+# Display main page by serving its html file. 
+# "html = True" automatically locates index.html in directory folder
+app.mount("/", StaticFiles(directory = "../../Web/dist", html = True), name = "frontend")
+
+# Serving the ML model
+# Remember to define the URL as "/model/keypoint_classifier.hdf5"
+app.mount("/model", StaticFiles(directory="../../hand-gesture-recognition-trainer/model/keypoint_classifier"), name = "model")
+
+# Serving the FSA
+#TODO: Insert correct directory path
+app.mount("/FSA", StaticFiles(directory = ""), name = "FSA")
 
 
-#--------------- GET ---------------
+@app.exception_handler(404)
+def exception_404(input1, input2):
+    return RedirectResponse('/')
 
-#GET main page
-@app.route("/", methods=["GET"])
-def get_main():
-    try:
-        res = front.get_front()
 
-        return res
-    except:
-        return "exception"
-    
-
-#GET FSA
-@app.route("/fsa", methods=["GET"])
-def get_fsa():
-    try:
-        res = fsa.get_fsa()
-
-        return res
-    except:
-        return "exception"
-
-#GET MI model
-@app.route("/model", methods=["GET"])
-def get_model():
-    try:
-        res = model.get_model()
-        
-        return res
-    except:
-        return "exception"
-
-#--------------- POST ---------------
-
-#@app.route("/endpoint", methods=["POST"])
-#def post_model():
-#    return "post_model", 201
-
-if __name__ == '__main__':
-    app.run()
+uvicorn.run(app)
