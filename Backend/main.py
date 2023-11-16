@@ -7,11 +7,11 @@ app = FastAPI(root_path="/")
 
 # Display main page by serving its html file. 
 # "html = True" automatically locates index.html in directory folder
-app.mount("/", StaticFiles(directory = "../../Web/dist", html = True), name = "frontend")
+app.mount("/", StaticFiles(directory = "static", html = True), name = "frontend")
 
 # Serving the ML model
 # TODO: Make sure directory path is correct after updating model
-app.mount("/model", StaticFiles(directory="../../hand-gesture-recognition-trainer/model/keypoint_classifier"), name = "model")
+app.mount("/model", StaticFiles(directory="static/model"), name = "model")
 
 # Serving the FSA
 #TODO: Insert correct directory path
